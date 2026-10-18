@@ -1,0 +1,232 @@
+﻿FLEXI STUDIO V8
+GUÍA RÁPIDA DE INSTALACIÓN Y USO
+Proyecto académico - Taller de Base de Datos
+======================================================================
+
+ESTIMADO PROFESOR:
+
+Esta entrega contiene el código fuente de Flexi Studio V8, los scripts
+para crear las bases de datos y los archivos para instalar el sistema
+en Windows. La aplicación fue desarrollada en Python y PyQt6 y permite
+trabajar con SQL Server o PostgreSQL, consultar registros, administrar
+catálogos mediante CRUD y exportar resultados a Excel.
+
+IMPORTANTE: el instalador NO instala SQL Server ni PostgreSQL. Debe
+existir al menos uno de estos motores, con una base de datos creada
+mediante los scripts incluidos. Tampoco hay contraseñas de acceso
+preconfiguradas para iniciar sesión en Flexi Studio: es necesario
+activar la cuenta del administrador, como se explica en el paso 4.
+
+
+1. CONTENIDO DE LA ENTREGA
+----------------------------------------------------------------------
+
+Carpeta FLEXI Base de Datos:
+  - FlexiZamora_SQL_Server.sql  : crea FlexiZamora en SQL Server.
+  - FlexiZamora_PostgreSQL.sql : crea las tablas en una base PostgreSQL
+                                 vacía, por ejemplo FlexiZamoraPG.
+
+Código fuente:
+  - main.py                      : inicia la aplicación.
+  - interfaz_pyqt.py             : ventanas, formularios y menú.
+  - base_datos.py                : operaciones y lógica de acceso a datos.
+  - conexion_SQLS_Flexi.py       : clase de conexión original SQL Server.
+  - conexion_PG_Flexi.py         : clase de conexión original PostgreSQL.
+  - esquema_flexi.py             : definición de tablas y campos.
+  - seguridad.py                 : contraseñas, sesiones y permisos.
+  - configurar_admin.py          : activación de la cuenta administrador.
+  - configurar_conexiones.py     : configuración de los dos motores.
+  - configuracion_local.py       : lectura y guardado de configuraciones.
+  - exportar_excel.py, estilos.py, assets/ y requirements.txt.
+
+Instalación:
+  - CREAR_INSTALADOR.bat         : prepara y compila el instalador.
+  - FlexiStudio.spec             : configuración de PyInstaller.
+  - FlexiStudio_Instalador.iss   : configuración de Inno Setup.
+  - FlexiStudio_Setup_1.1.0.exe  : instalador listo, SOLO si fue incluido.
+
+Se puede utilizar uno o ambos motores. Cada base es independiente: una
+modificación en SQL Server no se reproduce en PostgreSQL automáticamente.
+
+
+2. CREAR LA BASE DE DATOS (ELEGIR UNO O AMBOS MOTORES)
+----------------------------------------------------------------------
+
+OPCIÓN A - SQL SERVER
+  1) Abrir SQL Server Management Studio (SSMS) y conectarse al servidor.
+  2) Abrir FLEXI Base de Datos/FlexiZamora_SQL_Server.sql.
+  3) Ejecutar el script completo con permisos para crear bases de datos.
+  4) Se creará la base de datos denominada FlexiZamora, sus 12 tablas,
+     las relaciones y los registros de demostración.
+
+  ATENCIÓN: el script evita sobrescribir una base llamada FlexiZamora
+  si ya existe. Ejecutarlo solamente en un servidor de prueba donde
+  todavía no exista esa base. No borre una base existente para probar.
+
+OPCIÓN B - POSTGRESQL
+  1) Abrir pgAdmin y conectarse a su servidor PostgreSQL.
+  2) Crear una base de datos VACÍA llamada FlexiZamoraPG (o elegir otro
+     nombre y después indicarlo en la configuración de Flexi Studio).
+  3) Seleccionar ESA base y abrir Query Tool.
+  4) Abrir FLEXI Base de Datos/FlexiZamora_PostgreSQL.sql.
+  5) Ejecutar el script completo. Creará 12 tablas con relaciones y datos.
+
+  ATENCIÓN: este script NO crea la base de datos PostgreSQL; crea su
+  contenido en la base seleccionada. Se detiene si detecta tablas de
+  Flexi ya existentes en el esquema public.
+
+Verificación orientativa después de cargar un script en una base vacía:
+  - 12 tablas y aproximadamente 357 registros en total.
+  - 85 productos, 160 existencias de inventario y 5 usuarios de ejemplo.
+  - Los nombres de modelos y algunas marcas son ficticios con fines
+    académicos. Los usuarios cargados aún no tienen contraseñas válidas.
+
+
+3. INSTALAR O EJECUTAR FLEXI STUDIO EN WINDOWS
+----------------------------------------------------------------------
+
+OPCIÓN A - SI SE ADJUNTÓ EL INSTALADOR .EXE (LA MÁS SENCILLA)
+  1) En Windows 10 u 11 de 64 bits, ejecutar:
+           FlexiStudio_Setup_1.1.0.exe
+  2) Seguir el asistente y abrir Flexi Studio desde el menú Inicio.
+  3) En el primer inicio, completar y guardar la conexión al motor
+     de base de datos que se preparó en el paso 2.
+
+  El programa ya instalado no requiere Python, PERO para activar la
+  primera cuenta administrativa con el archivo configurar_admin.py
+  sí se necesita Python y las dependencias del código fuente (paso 4).
+
+OPCIÓN B - SI NO SE ADJUNTÓ EL INSTALADOR .EXE
+  Para compilarlo se requiere:
+  - Windows 10/11 de 64 bits.
+  - Python 3 de 64 bits con comando py y acceso a Internet.
+  - Inno Setup 6: https://jrsoftware.org/isinfo.php
+
+  1) Descomprimir la entrega en una ruta CORTA, por ejemplo C:\FlexiV8,
+     para evitar errores de rutas largas con PyQt6.
+  2) Ejecutar CREAR_INSTALADOR.bat.
+  3) Esperar a que termine. El instalador se genera normalmente en:
+           salida\FlexiStudio_Setup_1.1.0.exe
+  4) Ejecutar ese .exe y completar la instalación.
+
+ALTERNATIVA PARA REVISAR EL CÓDIGO SIN INSTALAR:
+  Abrir CMD en la carpeta que contiene main.py y ejecutar:
+           py -m pip install -r requirements.txt
+           py main.py
+  Este método requiere Python y los motores de base de datos accesibles.
+
+
+4. CONFIGURAR LAS CONEXIONES Y ACTIVAR AL ADMINISTRADOR
+----------------------------------------------------------------------
+
+A. CONFIGURACIÓN DE CONEXIONES
+
+  Al abrir Flexi Studio por primera vez, aparecerá la configuración.
+  También puede abrirse desde la pantalla de acceso o el acceso directo
+  "Configurar conexiones de Flexi Studio" del menú Inicio.
+
+  PostgreSQL: indicar servidor, puerto (normalmente 5432), base de
+  datos, usuario y contraseña del motor PostgreSQL.
+
+  SQL Server: indicar servidor/instancia, base de datos FlexiZamora,
+  usuario SQL y contraseña SQL válidos. Este proyecto usa autenticación
+  mediante usuario y contraseña SQL Server, NO autenticación integrada
+  de Windows para la conexión de la aplicación.
+
+  Elegir "Probar PostgreSQL" o "Probar SQL Server" y después
+  "Guardar conexiones". No hace falta configurar ambos motores si solo
+  se va a revisar uno.
+
+B. ACTIVACIÓN INICIAL (OBLIGATORIA PARA INICIAR SESIÓN)
+
+  Los scripts crean una cuenta con rol Administrador cuyo correo de
+  ejemplo es: alex.rivera@flexizamora.com
+  Su contraseña almacenada es un marcador de prueba y NO sirve para
+  ingresar. Para activar esa cuenta, desde la carpeta del código fuente:
+
+  1) Tener Python 3 disponible y ejecutar, si hace falta:
+           py -m pip install -r requirements.txt
+
+  2) Ejecutar UNO de estos comandos según la base configurada:
+
+     Para SQL Server:
+           py configurar_admin.py --motor sqlserver
+
+     Para PostgreSQL:
+           py configurar_admin.py --motor postgres
+
+  3) Cuando lo solicite, escribir el correo del administrador que
+     existe en la tabla Usuario (en una instalación nueva, el correo
+     de ejemplo indicado arriba).
+  4) Elegir una contraseña NUEVA de al menos 12 caracteres y repetirla.
+  5) Esperar el mensaje "Cuenta activada".
+
+  Si esa cuenta YA tenía una contraseña válida configurada y se posee
+  autorización administrativa para sustituirla, se puede usar:
+           py configurar_admin.py --motor sqlserver --restablecer
+     o bien:
+           py configurar_admin.py --motor postgres --restablecer
+
+  Las bases de datos son independientes. Para acceder como administrador
+  a ambas, hay que realizar la activación por separado en cada una.
+
+  IMPORTANTE: se requiere acceso autorizado al servidor y a las
+  credenciales del motor SQL para activar o restablecer contraseñas.
+  No se incluye ni se solicita la contraseña personal del alumno.
+
+
+5. INICIAR SESIÓN Y PROBAR LAS FUNCIONES
+----------------------------------------------------------------------
+
+  1) Abrir Flexi Studio desde Windows o con "py main.py".
+  2) Seleccionar PostgreSQL o SQL Server.
+  3) Escribir el correo del administrador y la contraseña creada
+     durante el paso 4.
+  4) Abrir "Tablas maestras" para consultar categorías, marcas,
+     líneas/estilos, estatus de producto, tallas, formas de pago y
+     tipos de usuario.
+  5) Probar Insertar, Consultar, Actualizar y Eliminar en un registro
+     de prueba. También puede revisar los productos y exportar Excel.
+
+  El administrador puede administrar los registros permitidos por el
+  sistema. Otros roles tienen permisos restringidos. Algunas bajas
+  pueden ser rechazadas por relaciones de claves foráneas y el rol
+  esencial de Administrador está protegido; esto es intencional.
+
+  RECOMENDACIÓN: no eliminar registros precargados relacionados con
+  ventas o inventario. Para verificar el CRUD, crear primero un registro
+  de prueba y después modificarlo o eliminarlo.
+
+
+6. SI OCURRE UN PROBLEMA
+----------------------------------------------------------------------
+
+  - No conecta: verificar que el motor SQL esté iniciado, el nombre de
+    servidor/instancia, puerto y credenciales de la CONEXIÓN SQL.
+  - No permite iniciar sesión: comprobar que el administrador fue
+    activado en el mismo motor elegido y que la cuenta esté activa.
+  - Error "No existe exactamente un administrador con ese correo":
+    revisar el correo real de Usuario y el rol correspondiente en
+    Tipo_Usuario. No crear registros duplicados por error.
+  - No se genera el instalador: comprobar Python, Inno Setup y ejecutar
+    desde una ruta corta (por ejemplo C:\FlexiV8).
+  - Si ya existe FlexiZamora o las tablas de PostgreSQL, NO volver a
+    ejecutar los scripts completos sobre una base con datos.
+
+
+7. NOTAS DE SEGURIDAD Y ALCANCE
+----------------------------------------------------------------------
+
+  - No se adjuntan contraseñas privadas ni configuraciones personales.
+  - Cada profesor o evaluador debe usar sus propias credenciales SQL.
+  - La configuración del equipo se guarda en:
+           %APPDATA%\FlexiStudio\conexiones.json
+    Este archivo puede contener contraseñas de CONEXIÓN SQL en texto
+    recuperable: NO compartirlo ni adjuntarlo a la tarea.
+  - La contraseña de la cuenta Flexi se almacena como hash, separada
+    de la contraseña para conectarse al motor de base de datos.
+  - Se trata de una aplicación académica. Los registros añadidos son
+    datos de demostración; no representan operaciones comerciales reales.
+
+Gracias por revisar el proyecto Flexi Studio V8.
+======================================================================

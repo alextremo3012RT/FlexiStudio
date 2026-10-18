@@ -1,0 +1,29 @@
+# Entornos virtuales
+.venv/
+.venv-build/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Archivos de compilación y empaquetado
+build/
+dist/
+salida/
+*.exe
+
+# Configuración local y credenciales
+.env
+.env.*
+!.env.example
+!CONFIGURACION_EJEMPLO.env
+conexiones.json
+config_*.tmp
+
+# Archivos temporales
+*.log
+.DS_Store
+Thumbs.db
